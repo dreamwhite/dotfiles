@@ -3,6 +3,8 @@ export ZSH="$HOME/.oh-my-zsh"
 export HISTTIMEFORMAT='%F %T'
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+export PYTHONHTTPSVERIFY=0 
+
 ZSH_DISABLE_COMPFIX=true
 setopt list_ambiguous
 if [[ $TERM == dumb ]]; then
@@ -11,10 +13,11 @@ else
     autoload -Uz bracketed-paste-magic
     zle -N bracketed-paste bracketed-paste-magic
 fi
+
 # THEME CONFIGURATION
-export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs ssh)
-export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir)
-source  ~/.zshsh/powerlevel9k/powerlevel9k.zsh-theme
+export POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status root_indicator background_jobs ssh time)
+export POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(context dir vcs package)
+source  ~/.zshsh/powerlevel10k/powerlevel10k.zsh-theme
 
 # PLUGINS 
 plugins=(
@@ -22,28 +25,21 @@ plugins=(
     command-not-found
     )
 
-
+# Sources
 source $ZSH/oh-my-zsh.sh
 source ~/.zshsh/zsh-syntax-highlighting.zsh
 source $(dirname $(gem which colorls))/tab_complete.sh
-
+source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # ALIASES
-alias my='mysql -uroot -p $1'
-alias backup_docker='docker save $1 -o backup.zip'
-alias start_portainer='docker start portainer'
 alias ..='cd ..'
-alias remcrash='sudo rm -r /var/crash/*'
 alias empty='echo >'
-alias backup_apache2_config='zip -r -0 apache2_config.zip /etc/apache2'
-alias backup_mariadb='zip -r -0 mysql_config.zip /etc/mysql'
 alias cls='clear'
 alias ls='colorls --sd'
 alias 'git clone'="git clone https://github.com/"
+alias 'hcb'='headsetcontrol -b'
 
-dump_db() {
-	mysqldump -u root -p "$1" > "$1.sql"
-}
+#Custom functions 
 
 extract () {
    if [ -f $1 ] ; then
@@ -66,10 +62,6 @@ extract () {
    fi
  }
 
-list_db() {
-	mysql -u root -p -e "show databases;"
-}
-
 function repeat() # Syntax: "repeat [X] [command]"  
 {
     local i max
@@ -78,6 +70,9 @@ function repeat() # Syntax: "repeat [X] [command]"
         eval "$@";
     done
 }
-source $(dirname $(gem which colorls))/tab_complete.sh
+
+# Integrations
+
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+neofetch | lolcat -p 10000
